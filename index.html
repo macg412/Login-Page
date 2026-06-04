@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BAMValley — Sign in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:          #f4f5f7;
+    --surface:     #ffffff;
+    --surface-2:   #f7f8fa;
+    --surface-3:   #eef0f4;
+    --ink:         #0b1220;
+    --ink-2:       #1f2937;
+    --ink-3:       #475569;
+    --ink-4:       #6b7280;
+    --ink-5:       #94a3b8;
+    --line:        #e6e8ee;
+    --line-2:      #d9dde5;
+    --accent:      oklch(46% 0.16 258);
+    --accent-2:    oklch(40% 0.17 258);
+    --accent-soft: oklch(96% 0.025 258);
+    --accent-ink:  oklch(34% 0.14 258);
+    --ok:          oklch(52% 0.12 150);
+    --warn:        oklch(64% 0.13 70);
+    --danger:      oklch(54% 0.18 27);
+    --r-xl: 18px;
+    --sh-1: 0 1px 0 rgba(15,23,42,0.04), 0 1px 2px rgba(15,23,42,0.04);
+    --sh-3: 0 30px 60px -20px rgba(15,23,42,0.30), 0 12px 24px -12px rgba(15,23,42,0.20);
+    --font: 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--font);
+    background:
+      radial-gradient(900px 700px at 60% -5%, oklch(94% 0.04 258) 0%, transparent 55%),
+      radial-gradient(700px 500px at -5% 110%, oklch(96% 0.025 200) 0%, transparent 55%),
+      var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh; padding: 24px;
+    -webkit-font-smoothing: antialiased;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+
+  .auth-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-xl);
+    padding: 36px 32px;
+    width: 100%; max-width: 400px;
+    box-shadow: var(--sh-3);
+  }
+
+  .auth-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+  .brandmark {
+    width: 36px; height: 36px; border-radius: 9px; flex-shrink: 0;
+    background: linear-gradient(140deg, var(--accent) 0%, var(--accent-2) 100%);
+    display: grid; place-items: center;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 6px 14px -6px var(--accent);
+  }
+  .brandmark svg { width: 18px; height: 18px; color: #fff; }
+  .brand-text { display: flex; flex-direction: column; line-height: 1; }
+  .brand-text .word { font-weight: 700; font-size: 0.98rem; color: var(--ink); letter-spacing: -0.02em; }
+  .brand-text .word em { font-style: normal; color: var(--accent); }
+  .brand-text .sub { font-size: 0.7rem; color: var(--ink-4); margin-top: 4px; letter-spacing: 0.04em; text-transform: uppercase; }
+
+  .auth-title { font-size: 1.35rem; font-weight: 700; color: var(--ink); letter-spacing: -0.025em; margin-bottom: 20px; }
+  .auth-body  { font-size: 0.88rem; color: var(--ink-3); line-height: 1.6; margin-bottom: 20px; }
+  .auth-switch { text-align: center; font-size: 0.82rem; color: var(--ink-4); margin-top: 14px; }
+  .auth-switch a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  .auth-switch a:hover { text-decoration: underline; }
+  .auth-forgot { text-align: right; margin-top: -8px; margin-bottom: 14px; }
+  .auth-forgot a { font-size: 0.8rem; color: var(--accent); text-decoration: none; font-weight: 500; }
+  .auth-forgot a:hover { text-decoration: underline; }
+
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--ink-2); margin-bottom: 6px; letter-spacing: -0.01em; }
+  .field input {
+    width: 100%; padding: 10px 13px;
+    border: 1.5px solid var(--line-2); border-radius: 10px;
+    font-size: 0.92rem; font-family: inherit; color: var(--ink); background: var(--surface);
+    outline: none; transition: border-color 0.15s;
+  }
+  .field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+
+  .pw-wrap { position: relative; }
+  .pw-wrap input { padding-right: 44px !important; }
+  .pw-toggle {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; padding: 4px; cursor: pointer;
+    color: var(--ink-4); display: flex; align-items: center; line-height: 1;
+  }
+  .pw-toggle:hover { color: var(--ink); }
+  .pw-toggle svg { width: 18px; height: 18px; }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 10px 18px; border-radius: 10px; font-size: 0.88rem; font-weight: 600;
+    font-family: inherit; border: 1.5px solid transparent; cursor: pointer;
+    transition: all 0.14s; line-height: 1; letter-spacing: -0.01em;
+  }
+  .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+  .btn-primary {
+    background: var(--accent); color: #fff; border-color: var(--accent-2);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 4px 12px -4px var(--accent);
+  }
+  .btn-primary:hover:not(:disabled) { background: var(--accent-2); }
+  .btn-ghost { background: transparent; color: var(--ink-3); border-color: var(--line-2); }
+  .btn-ghost:hover:not(:disabled) { background: var(--surface-2); color: var(--ink); border-color: var(--line); }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner {
+    width: 32px; height: 32px; border: 2px solid var(--line);
+    border-top-color: var(--accent); border-radius: 50%;
+    animation: spin 0.8s linear infinite; margin: 0 auto 14px;
+  }
+
+  .toast-wrap { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); z-index: 600; display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
+  .toast { background: var(--ink); color: #fff; padding: 11px 22px; border-radius: 999px; font-size: 0.86rem; font-weight: 500; box-shadow: var(--sh-3); opacity: 0; transform: translateY(8px); transition: all 0.22s ease-out; pointer-events: auto; display: flex; align-items: center; gap: 10px; }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast svg { width: 14px; height: 14px; }
+  .toast.ok     { background: var(--ok); }
+  .toast.warn   { background: oklch(40% 0.13 70); }
+  .toast.danger { background: var(--danger); }
+</style>
+</head>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<body>
+
+<svg width="0" height="0" style="position:absolute;overflow:hidden;" aria-hidden="true">
+  <defs>
+    <symbol id="icon-bolt"    viewBox="0 0 24 24"><path fill="currentColor" d="M13 2L4.5 13.5h6L10 22l9-12h-6l1-8z"/></symbol>
+    <symbol id="icon-check"   viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="icon-warning" viewBox="0 0 24 24" fill="none"><path d="M12 3l10 18H2L12 3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 10v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="18" r="1" fill="currentColor"/></symbol>
+    <symbol id="icon-info"    viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v0M12 11v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="icon-eye"     viewBox="0 0 24 24" fill="none"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/></symbol>
+    <symbol id="icon-eye-off" viewBox="0 0 24 24" fill="none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19M1 1l22 22" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.73 10.73A3 3 0 0 0 14.83 14.83" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
+
+<div class="auth-card">
+  <div class="auth-brand">
+    <div class="brandmark"><svg><use href="#icon-bolt"/></svg></div>
+    <div class="brand-text">
+      <div class="word">BAM<em>Valley</em></div>
+      <div class="sub">Field Hub</div>
+    </div>
+  </div>
+
+  <!-- LOADING — resuming existing session -->
+  <div id="panelLoading" hidden>
+    <div style="text-align:center;padding:28px 0 20px;">
+      <div class="spinner"></div>
+      <div style="font-size:0.88rem;color:var(--ink-4);">Loading your account…</div>
+    </div>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="panelLogin">
+    <div class="auth-title">Sign in</div>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="loginEmail" autocomplete="email" placeholder="you@example.com" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <div class="pw-wrap">
+        <input type="password" id="loginPassword" autocomplete="off" placeholder="Enter your password" onkeydown="if(event.key==='Enter')doLogin()">
+        <button type="button" class="pw-toggle" onclick="togglePw('loginPassword',this)" tabindex="-1" aria-label="Show password"><svg><use href="#icon-eye"/></svg></button>
+      </div>
+    </div>
+    <div class="auth-forgot"><a href="#" onclick="showPanel('forgot');return false">Forgot password?</a></div>
+    <button class="btn btn-primary" style="width:100%;" onclick="doLogin()">Sign in</button>
+    <div class="auth-switch">No account? <a href="#" onclick="showPanel('signup');return false">Create one</a></div>
+  </div>
+
+  <!-- SIGNUP -->
+  <div id="panelSignup" hidden>
+    <div class="auth-title">Create account</div>
+    <div class="field"><label>Full name</label><input type="text" id="signupName" autocomplete="name" placeholder="e.g. Ben MacGeorge"></div>
+    <div class="field"><label>Email</label><input type="email" id="signupEmail" autocomplete="email" placeholder="you@example.com"></div>
+    <div class="field">
+      <label>Password <span style="color:var(--ink-5);font-weight:400;">(min. 6 characters)</span></label>
+      <div class="pw-wrap">
+        <input type="password" id="signupPassword" autocomplete="new-password" placeholder="Create a password">
+        <button type="button" class="pw-toggle" onclick="togglePw('signupPassword',this)" tabindex="-1" aria-label="Show password"><svg><use href="#icon-eye"/></svg></button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Confirm password</label>
+      <div class="pw-wrap">
+        <input type="password" id="signupConfirm" autocomplete="new-password" placeholder="Re-enter your password" onkeydown="if(event.key==='Enter')doSignup()">
+        <button type="button" class="pw-toggle" onclick="togglePw('signupConfirm',this)" tabindex="-1" aria-label="Show password"><svg><use href="#icon-eye"/></svg></button>
+      </div>
+    </div>
+    <button class="btn btn-primary" style="width:100%;margin-top:4px;" onclick="doSignup()">Create account</button>
+    <div class="auth-switch">Already have an account? <a href="#" onclick="showPanel('login');return false">Sign in</a></div>
+  </div>
+
+  <!-- FORGOT PASSWORD -->
+  <div id="panelForgot" hidden>
+    <div class="auth-title">Reset password</div>
+    <p class="auth-body">Enter your email and we'll send you a link to reset your password.</p>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="forgotEmail" autocomplete="email" placeholder="you@example.com" onkeydown="if(event.key==='Enter')doForgotPassword()">
+    </div>
+    <button class="btn btn-primary" style="width:100%;margin-top:4px;" onclick="doForgotPassword()">Send reset link</button>
+    <div class="auth-switch"><a href="#" onclick="showPanel('login');return false">Back to sign in</a></div>
+  </div>
+
+  <!-- RESET PASSWORD (arrived via email link) -->
+  <div id="panelReset" hidden>
+    <div class="auth-title">Set new password</div>
+    <p class="auth-body">Choose a new password for your account.</p>
+    <div class="field">
+      <label>New password <span style="color:var(--ink-5);font-weight:400;">(min. 6 characters)</span></label>
+      <div class="pw-wrap">
+        <input type="password" id="resetPassword" autocomplete="new-password" placeholder="New password">
+        <button type="button" class="pw-toggle" onclick="togglePw('resetPassword',this)" tabindex="-1" aria-label="Show password"><svg><use href="#icon-eye"/></svg></button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Confirm new password</label>
+      <div class="pw-wrap">
+        <input type="password" id="resetConfirm" autocomplete="new-password" placeholder="Re-enter new password" onkeydown="if(event.key==='Enter')doResetPassword()">
+        <button type="button" class="pw-toggle" onclick="togglePw('resetConfirm',this)" tabindex="-1" aria-label="Show password"><svg><use href="#icon-eye"/></svg></button>
+      </div>
+    </div>
+    <button class="btn btn-primary" style="width:100%;margin-top:4px;" onclick="doResetPassword()">Update password</button>
+  </div>
+
+  <!-- CONFIRM EMAIL -->
+  <div id="panelConfirm" hidden>
+    <div style="text-align:center;margin-bottom:16px;"><svg style="width:40px;height:40px;color:var(--ok)"><use href="#icon-check"/></svg></div>
+    <div class="auth-title" style="text-align:center;">Check your email</div>
+    <p class="auth-body" style="text-align:center;">We sent a confirmation link to <strong id="confirmEmailAddr">—</strong>. Click the link, then return here to sign in.</p>
+    <button class="btn btn-ghost" style="width:100%;" onclick="showPanel('login')">Back to sign in</button>
+  </div>
+
+  <!-- AWAITING APPROVAL -->
+  <div id="panelPending" hidden>
+    <div style="text-align:center;margin-bottom:16px;"><svg style="width:40px;height:40px;color:var(--warn)"><use href="#icon-warning"/></svg></div>
+    <div class="auth-title" style="text-align:center;">Awaiting approval</div>
+    <p class="auth-body" style="text-align:center;">Your email is confirmed. An administrator needs to approve your account before you can access the hub.</p>
+    <button class="btn btn-primary" style="width:100%;" onclick="checkApproval()">Check again</button>
+    <button class="btn btn-ghost" style="width:100%;margin-top:8px;" onclick="doSignOut()">Sign out</button>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   AUTH ADAPTER
+   All provider-specific calls live here. To swap from Supabase, rewrite
+   only this block. The rest of the page only calls Auth.* methods.
+══════════════════════════════════════════════════════════════════════ */
+const SUPABASE_URL  = 'https://rgcmisfwrflshggcwjie.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJnY21pc2Z3cmZsc2hnZ2N3amllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3NzU2ODcsImV4cCI6MjA4OTM1MTY4N30.q2Et2UUoYYK2UXeBiKFfVbfYBVfIDOya0E-LL81cZCc';
+const _sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON, {
+  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+});
+
+const Auth = {
+  login:          (email, pw)    => _sb.auth.signInWithPassword({ email, password: pw }),
+  signup:         (email, pw, name) => _sb.auth.signUp({ email, password: pw, options: { data: { name } } }),
+  logout:         ()             => _sb.auth.signOut(),
+  recover:        (email, opts)  => _sb.auth.resetPasswordForEmail(email, opts),
+  updatePassword: (pw)           => _sb.auth.updateUser({ password: pw }),
+  getSession:     ()             => _sb.auth.getSession(),
+  onAuthChange:   (fn)           => _sb.auth.onAuthStateChange(fn),
+  getProfile:     (userId)       => _sb.from('profiles').select('approved').eq('id', userId).single(),
+};
+
+const DASHBOARD = '/dashboard.html';
+
+/* ══════════════════════════════════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════════════════════════════════ */
+const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const ICO = id => `<svg><use href="#${id}"/></svg>`;
+const withTimeout = (p, ms) => Promise.race([p, new Promise((_,r) => setTimeout(() => r(new Error('timeout')), ms))]);
+
+function toast(msg, kind = '') {
+  let wrap = document.getElementById('toastWrap');
+  if (!wrap) { wrap = document.createElement('div'); wrap.id = 'toastWrap'; wrap.className = 'toast-wrap'; document.body.appendChild(wrap); }
+  const t = document.createElement('div');
+  t.className = `toast ${kind}`;
+  const ico = kind === 'ok' ? 'icon-check' : kind === 'warn' ? 'icon-warning' : kind === 'danger' ? 'icon-warning' : 'icon-info';
+  t.innerHTML = `${ICO(ico)}<span>${esc(msg)}</span>`;
+  wrap.appendChild(t);
+  requestAnimationFrame(() => t.classList.add('show'));
+  setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 250); }, 2200);
+}
+
+const PANELS = ['loading','login','signup','forgot','reset','confirm','pending'];
+function showPanel(name) {
+  PANELS.forEach(p => {
+    const el = document.getElementById('panel' + p[0].toUpperCase() + p.slice(1));
+    if (el) el.hidden = (p !== name);
+  });
+}
+
+function togglePw(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  const show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  btn.innerHTML = show ? ICO('icon-eye-off') : ICO('icon-eye');
+  btn.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   AUTH FLOW
+══════════════════════════════════════════════════════════════════════ */
+async function handleSession(session) {
+  showPanel('loading');
+  try {
+    const { data: profile } = await withTimeout(Auth.getProfile(session.user.id), 8000);
+    if (!profile) { showPanel('login'); return; }
+    if (!profile.approved) { showPanel('pending'); return; }
+    window.location.href = DASHBOARD;
+  } catch(e) {
+    showPanel('login');
+  }
+}
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pw    = document.getElementById('loginPassword').value;
+  if (!email || !pw) { toast('Please enter your email and password', 'warn'); return; }
+  const btn = document.querySelector('#panelLogin .btn-primary');
+  if (btn) { btn.disabled = true; btn.textContent = 'Signing in…'; }
+  try {
+    const { error } = await withTimeout(Auth.login(email, pw), 12000);
+    if (error) {
+      const m = (error.message || '').toLowerCase();
+      if (m.includes('invalid login') || m.includes('invalid credentials')) {
+        toast('Incorrect email or password', 'danger');
+      } else if (m.includes('email not confirmed')) {
+        toast('Please confirm your email address first', 'warn');
+      } else {
+        toast(error.message, 'danger');
+      }
+    }
+    // on success: onAuthChange fires → handleSession → redirect to dashboard
+  } catch(e) {
+    toast(e.message || 'Sign-in failed — check your connection', 'danger');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Sign in'; }
+  }
+}
+
+async function doSignup() {
+  const name    = document.getElementById('signupName').value.trim();
+  const email   = document.getElementById('signupEmail').value.trim();
+  const pw      = document.getElementById('signupPassword').value;
+  const confirm = document.getElementById('signupConfirm').value;
+  if (!name || !email || !pw || !confirm) { toast('All fields are required', 'warn'); return; }
+  if (pw.length < 6) { toast('Password must be at least 6 characters', 'warn'); return; }
+  if (pw !== confirm) { toast('Passwords do not match', 'danger'); return; }
+  const btn = document.querySelector('#panelSignup .btn-primary');
+  if (btn) { btn.disabled = true; btn.textContent = 'Creating account…'; }
+  try {
+    const { error } = await Auth.signup(email, pw, name);
+    if (error) {
+      const m = (error.message || '').toLowerCase();
+      toast(m.includes('already') ? 'An account with this email already exists' : error.message, 'danger');
+    } else {
+      document.getElementById('confirmEmailAddr').textContent = email;
+      showPanel('confirm');
+    }
+  } catch(e) {
+    toast(e.message || 'Failed to create account — check your connection', 'danger');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Create account'; }
+  }
+}
+
+async function doForgotPassword() {
+  const email = document.getElementById('forgotEmail').value.trim();
+  if (!email) { toast('Please enter your email address', 'warn'); return; }
+  const btn = document.querySelector('#panelForgot .btn-primary');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+  try {
+    const { error } = await Auth.recover(email, { redirectTo: window.location.origin + '/' });
+    if (error) { toast(error.message, 'danger'); }
+    else { toast('Reset link sent — check your email', 'ok'); showPanel('login'); }
+  } catch(e) {
+    toast(e.message || 'Failed to send reset email', 'danger');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Send reset link'; }
+  }
+}
+
+async function doResetPassword() {
+  const pw      = document.getElementById('resetPassword').value;
+  const confirm = document.getElementById('resetConfirm').value;
+  if (!pw || !confirm) { toast('Please fill in both fields', 'warn'); return; }
+  if (pw.length < 6) { toast('Password must be at least 6 characters', 'warn'); return; }
+  if (pw !== confirm) { toast('Passwords do not match', 'danger'); return; }
+  const btn = document.querySelector('#panelReset .btn-primary');
+  if (btn) { btn.disabled = true; btn.textContent = 'Updating…'; }
+  try {
+    const { error } = await Auth.updatePassword(pw);
+    if (error) { toast(error.message, 'danger'); }
+    else {
+      history.replaceState(null, '', '/');
+      window.location.href = DASHBOARD;
+    }
+  } catch(e) {
+    toast(e.message || 'Failed to update password', 'danger');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Update password'; }
+  }
+}
+
+async function doSignOut() { await Auth.logout(); showPanel('login'); }
+
+async function checkApproval() {
+  const { data: { session } } = await Auth.getSession();
+  if (!session) { showPanel('login'); return; }
+  const { data: profile } = await Auth.getProfile(session.user.id);
+  if (profile?.approved) window.location.href = DASHBOARD;
+  else toast('Still awaiting admin approval', 'warn');
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════════════════════════════ */
+showPanel('login');
+Auth.onAuthChange(async (event, session) => {
+  if (event === 'INITIAL_SESSION') {
+    if (session && !window.location.hash.includes('type=recovery')) {
+      await handleSession(session);
+    }
+    return;
+  }
+  if (event === 'PASSWORD_RECOVERY') { showPanel('reset'); return; }
+  if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+    if (session) await handleSession(session);
+    return;
+  }
+  if (event === 'SIGNED_OUT') { showPanel('login'); }
+});
+</script>
+</body>
+</html>
